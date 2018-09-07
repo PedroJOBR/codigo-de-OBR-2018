@@ -67,20 +67,15 @@ void setup()
   pinMode(12, OUTPUT);
   qtr_cal();
   garra.attach(18);
+  
 
 }
 
 void loop()
 {
-
+  desligar();
   unsigned int position = qtra.readLine(sensorValues);
   oi();
-  int frente_U = ultrasonic_F.Ranging(CM);
-
-  
-  Serial.print("(F-");
-  Serial.print(frente_U);
-  Serial.println("cm) ");
   
   sensor_1 = analogRead(TCRT_f1);
   sensor_2 = analogRead(TCRT_f2);
@@ -97,23 +92,31 @@ void loop()
   int qtr7 = sensorValues[6];//                                                                  ||                  ||
   int qtr8 = sensorValues[7];//                                                                  ||                  ||
 
-  /*if(frente_U < 2){
-    atras(vm);
-    delay(300);
-    desviar();
-  }*/
+ if (position == 0 || position > 6300 ) {
+    frente(vm); Serial.println("frente");
+  ligar();
+  }
   if ( sensor_1 > p2 && sensor_2 > p2) {
     frente(vm); Serial.println("frente _ ww - preto");
+    ligar();
   }
   if ( sensor_1 < p2 && sensor_2 < p2) {
     frente(vm); Serial.println("frente _ ww _ branco");
+    ligar();
   }
   if (qtr1 > preto && qtr2 > preto && qtr3 > preto && qtr4 > preto && qtr5 > preto && qtr6 > preto && qtr7 > preto && qtr8 > preto) {
     frente(vm); Serial.println("pretos");
+    ligar();
   }
+  
   //-----------------------------------------------------------ESQUERDA
-  if (sensor_1 < branco && position > 0 && position < 7000) {
+ if (sensor_1 < branco && position > 0 && position < 6400) {
     esque(vm); Serial.println("frente1__esquerda");
+    led_E();
+  }
+  if(sensorE > p3 && position > 0 && position < 6400){
+    led_E();
+    esquerda(vm);  Serial.println("esqireuda__esquerda");
   }
   /*if ((qtr1 > preto || qtr2 > preto || qtr3 > preto) && sensorD < p2) {
     esquerda(vm); Serial.println("ESQUERDA___");
@@ -121,10 +124,11 @@ void loop()
 
   if ((qtr1 > preto && qtr2 > preto && qtr3 > preto) && (sensor_1 > p2 || sensor_2 > p2) ) {
     frente(vm); Serial.println("engano");
-
+    led_E();
   }
   else if ((qtr1 > preto && qtr2 > preto && qtr3 > preto) && (sensor_1 < p2 && sensor_2 < p2)) {
     frente(vm); delay(300);
+    led_E();
     do {
       sensor_1 = analogRead(TCRT_f1);
       sensor_2 = analogRead(TCRT_f2);
@@ -135,10 +139,11 @@ void loop()
     frente(0);
     delay(1000);
   }
-    else if ((qtr1 > verde && qtr2 > verde && qtr3 > verde && qtr4 > verde && qtr5 > verde ) && sensorE < branco) {
+    else if (((qtr1 > p2 && qtr2 > p2 && qtr3 > p2 && qtr4 > p2 && qtr5 > p2 ) && sensorE < branco) || ((qtr1 < branco && qtr2 > verde && qtr3 > verde && qtr4 > verde && qtr5 > verde ) && sensorE < branco)) {
+    led_E();
     frente(vm); delay(400);
     esquerda(vm); delay(300);
-    Serial.println("entreiiiiiiiiiii tmbbbbbbbbbbbb");
+    Serial.println("entreiiii __ esquerda");
     do {
       sensor_1 = analogRead(TCRT_f1);
       sensor_2 = analogRead(TCRT_f2);
@@ -151,24 +156,26 @@ void loop()
     frente(0);
     delay(1000);
   }
-    
-    
-
-
 
   //-------------------------------------------------------------------------DIREITA
-
-  if (sensor_2 < branco && position > 0 && position < 7000) {
+if (sensor_2 < branco && position > 0 && position < 6400) {
     direi(vm ); Serial.println("frente2- direita");
+    led_D();
   }
-  /*if ((qtr6 > preto || qtr7 > preto || qtr8 > preto) && sensorE < p2) {
+  if ((qtr6 > preto || qtr7 > preto ) && sensorE < p2) {
+    led_D();
     direita(vm); Serial.println("DIREITA___");
     //delay(tempo);
+  }
+ /* if(sensorD > p3 && position > 0 && position < 7000){
+    direi(vm);  Serial.println("direit__direit");
   }*/
   if ((qtr6 > preto && qtr7 > preto && qtr8 > preto) && (sensor_1 > p2 || sensor_2 > p2)) {
+    led_D();
     frente(vm); Serial.println("engano_D");
   }
   else if ((qtr6 > preto && qtr7 > preto && qtr8 > preto) && (sensor_1 < p2 && sensor_2 < p2)) {
+    led_D();
     frente(vm); delay(300);
     do {
       sensor_1 = analogRead(TCRT_f1);
@@ -181,7 +188,8 @@ void loop()
     frente(0);
     delay(1000);
   }
-    else if ((qtr4 > verde && qtr5 > verde && qtr6 > verde-100 && qtr7 > preto && qtr8 > preto) && sensorD < branco) {
+    else if (((qtr4 > verde && qtr5 > verde && qtr6 > verde-100 && qtr7 > preto && qtr8 > preto) && sensorD < branco) || ((qtr4 > verde && qtr5 > verde && qtr6 > verde-100 && qtr7 > preto && qtr8 < branco) && sensorD < branco)) {
+    led_D();
     frente(vm); delay(500);
     direita(vm); delay(300);
     Serial.println("entreiiii------------------------------------------------------------");
@@ -198,10 +206,27 @@ void loop()
     frente(0);
     delay(1000);
   }
+// ---------------------------------------------- condiçoes de ultra
+
+
+  if(frente_U > 0 && frente_U < 2){
+    atras(vm);
+    delay(300);
+    desviar();
+  }
+  else if(esquerda_U > 0 &&esquerda_U < 5 && direita_U > 0 && direita_U < 5){
+    rampa();  
+  }
+
+
+}
+void atras(int pwm){
+  analogWrite(pos1, 0);
+  analogWrite(neg1, pwm);
+
+  analogWrite(pos2, 0);
+  analogWrite(neg2, pwm);
   
-
-//localizar();
-
 }
 void frente(int pwm) {
 
@@ -211,21 +236,12 @@ void frente(int pwm) {
   analogWrite(pos2, pwm);
   analogWrite(neg2, 0);
 }
-void atras(int pwm) {
-
-  analogWrite(pos1, 0);
-  analogWrite(neg1, pwm);
-
-  analogWrite(pos2, 0);
-  analogWrite(neg2, pwm);
-}
 void direi(int pwm){
   analogWrite(pos1, pwm);
   analogWrite(neg1, pwm);
 
   analogWrite(pos2, pwm);
   analogWrite(neg2, 0);
-
 
 }
 void esquerda(int pwm) {
@@ -366,7 +382,10 @@ delay(200);
  }
  
   }
-
+//--------------------------Rampa
+void rampa(){
+  
+}
 //--------------------------------------Localiza a área da vítima
 
 void area_vitima(){
@@ -451,6 +470,8 @@ void meio(){
     terceira_ronda();
   }
 }
+// ------------------------------ RAMPA
+
 
 //------------------------------------Pega a vítima com a "garra" 
 void pegar(){
@@ -550,3 +571,31 @@ void ultra(){
   Serial.println(" ))");
   delay(41);
 }
+// ligando os leds
+
+void ligar(){
+    digitalWrite(12, 1);
+    digitalWrite(11, 1);
+    delay(40);
+}
+void desligar(){
+    digitalWrite(12, 0);
+    digitalWrite(11, 0);
+  
+}
+void led_E(){
+    digitalWrite(12, 1);
+    delay(40);
+}
+void led_D(){
+    digitalWrite(11, 1);
+    delay(40);
+}
+
+void buzzer(){
+    digitalWrite(10, 1);
+    delay(1000);
+    digitalWrite(10, 0);
+    
+}
+
