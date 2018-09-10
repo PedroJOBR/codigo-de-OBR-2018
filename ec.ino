@@ -94,28 +94,28 @@ void loop()
 
  if (position == 0 || position > 6300 ) {
     frente(vm); Serial.println("frente");
-  ligar();
+  //ligar();
   }
   if ( sensor_1 > p2 && sensor_2 > p2) {
     frente(vm); Serial.println("frente _ ww - preto");
-    ligar();
+    //ligar();
   }
   if ( sensor_1 < p2 && sensor_2 < p2) {
     frente(vm); Serial.println("frente _ ww _ branco");
-    ligar();
+    //ligar();
   }
   if (qtr1 > preto && qtr2 > preto && qtr3 > preto && qtr4 > preto && qtr5 > preto && qtr6 > preto && qtr7 > preto && qtr8 > preto) {
     frente(vm); Serial.println("pretos");
-    ligar();
+    //ligar();
   }
   
   //-----------------------------------------------------------ESQUERDA
  if (sensor_1 < branco && position > 0 && position < 6400) {
     esque(vm); Serial.println("frente1__esquerda");
-    led_E();
+    //led_E();
   }
-  if(sensorE > p3 && position > 0 && position < 6400){
-    led_E();
+  if((qtr3 > preto || qtr2 > preto ) && sensorD < p2){
+    //led_E();
     esquerda(vm);  Serial.println("esqireuda__esquerda");
   }
   /*if ((qtr1 > preto || qtr2 > preto || qtr3 > preto) && sensorD < p2) {
@@ -124,90 +124,57 @@ void loop()
 
   if ((qtr1 > preto && qtr2 > preto && qtr3 > preto) && (sensor_1 > p2 || sensor_2 > p2) ) {
     frente(vm); Serial.println("engano");
-    led_E();
+    //led_E();
   }
-  else if ((qtr1 > preto && qtr2 > preto && qtr3 > preto) && (sensor_1 < p2 && sensor_2 < p2)) {
-    frente(vm); delay(300);
-    led_E();
-    do {
-      sensor_1 = analogRead(TCRT_f1);
-      sensor_2 = analogRead(TCRT_f2);
-      esquerda(vm);
-    } while ((sensor_1 < 400 || sensor_1 > 600) || (sensor_2 < 400 || sensor_2 > 600));
-
-    Serial.println("saiu esquerda");
-    frente(0);
-    delay(1000);
-  }
-    else if (((qtr1 > p2 && qtr2 > p2 && qtr3 > p2 && qtr4 > p2 && qtr5 > p2 ) && sensorE < branco) || ((qtr1 < branco && qtr2 > verde && qtr3 > verde && qtr4 > verde && qtr5 > verde ) && sensorE < branco)) {
-    led_E();
-    frente(vm); delay(400);
-    esquerda(vm); delay(300);
-    Serial.println("entreiiii __ esquerda");
-    do {
-      sensor_1 = analogRead(TCRT_f1);
-      sensor_2 = analogRead(TCRT_f2);
-      esquerda(vm);
-    } while ((sensor_1 < 400 || sensor_1 > 600) || (sensor_2 < 400 || sensor_2 > 600));
-
-    Serial.println("saiu esquerda");
-    frente(vm);
-    delay(200);
-    frente(0);
-    delay(1000);
-  }
-
+   
   //-------------------------------------------------------------------------DIREITA
 if (sensor_2 < branco && position > 0 && position < 6400) {
     direi(vm ); Serial.println("frente2- direita");
-    led_D();
+    //led_D();
   }
-  if ((qtr6 > preto || qtr7 > preto ) && sensorE < p2) {
-    led_D();
+  if (qtr6 > preto && qtr7 > preto ) {
+    //led_D();
     direita(vm); Serial.println("DIREITA___");
     //delay(tempo);
   }
  /* if(sensorD > p3 && position > 0 && position < 7000){
     direi(vm);  Serial.println("direit__direit");
-  }*/
-  if ((qtr6 > preto && qtr7 > preto && qtr8 > preto) && (sensor_1 > p2 || sensor_2 > p2)) {
-    led_D();
+  }
+  */
+  if ((qtr6 > preto && qtr7 > preto && qtr8 > preto) && (sensor_1 > p2 || sensor_2 > p2) ) {
+    //led_D();
     frente(vm); Serial.println("engano_D");
   }
-  else if ((qtr6 > preto && qtr7 > preto && qtr8 > preto) && (sensor_1 < p2 && sensor_2 < p2)) {
-    led_D();
+  else if (/*(qtr6 > preto && qtr7 > preto && qtr8 > preto)*/  (sensor_1 < p2 && sensor_2 < p2) && sensorD > p3) {
+    //led_D();
     frente(vm); delay(300);
     do {
       sensor_1 = analogRead(TCRT_f1);
       sensor_2 = analogRead(TCRT_f2);
       direita(vm);
     } while ((sensor_1 < 400 || sensor_1 > 600) || (sensor_2 < 400 || sensor_2 > 600));
-
-    Serial.println("saiu direita");
-   
+    Serial.println("saiu direita"); 
     frente(0);
     delay(1000);
   }
+  
     else if (((qtr4 > verde && qtr5 > verde && qtr6 > verde-100 && qtr7 > preto && qtr8 > preto) && sensorD < branco) || ((qtr4 > verde && qtr5 > verde && qtr6 > verde-100 && qtr7 > preto && qtr8 < branco) && sensorD < branco)) {
-    led_D();
-    frente(vm); delay(500);
+  //  led_D();
+    frente(vm); delay(400);
     direita(vm); delay(300);
-    Serial.println("entreiiii------------------------------------------------------------");
+    Serial.println("entreiiii------direita");
     do {
       sensor_1 = analogRead(TCRT_f1);
       sensor_2 = analogRead(TCRT_f2);
       direita(vm);
     } while ((sensor_1 < 400 || sensor_1 > 600) || (sensor_2 < 400 || sensor_2 > 600));
-
     Serial.println("saiu direita_verde");
    frente(vm);
     delay(300);
-
     frente(0);
     delay(1000);
   }
 // ---------------------------------------------- condiçoes de ultra
-
 
   if(frente_U > 0 && frente_U < 2){
     atras(vm);
@@ -239,8 +206,8 @@ void frente(int pwm) {
   analogWrite(neg2, 0);
 }
 void direi(int pwm){
-  analogWrite(pos1, pwm);
-  analogWrite(neg1, pwm);
+  analogWrite(pos1, 0);
+  analogWrite(neg1, pwm+30);
 
   analogWrite(pos2, pwm);
   analogWrite(neg2, 0);
@@ -260,8 +227,8 @@ void esque(int pwm){
   analogWrite(pos1, pwm);
   analogWrite(neg1, 0);
 
-  analogWrite(pos2, pwm);
-  analogWrite(neg2, pwm);
+  analogWrite(pos2, 0);
+  analogWrite(neg2, pwm+30);
 
 }
 void direita(int pwm) {
@@ -272,7 +239,6 @@ void direita(int pwm) {
   analogWrite(pos2, pwm);
   analogWrite(neg2, 0);
 }
-
 
 
 void qtr_cal()
@@ -426,13 +392,53 @@ void rampa(){
   //-----------------------------------------------------------ESQUERDA
  if (sensor_1 < branco && position > 0 && position < 6400) {
     esque(vm); Serial.println("frente1__esquerda");
-    led_E();
+    //led_E();
   }
-  if(sensorE > p3 && position > 0 && position < 6400){
-    led_E();
+  if((qtr3 > preto || qtr2 > preto ) && sensorD < p2){
+    //led_E();
     esquerda(vm);  Serial.println("esqireuda__esquerda");
   }
- 
+  /*if ((qtr1 > preto || qtr2 > preto || qtr3 > preto) && sensorD < p2) {
+    esquerda(vm); Serial.println("ESQUERDA___");
+  }*/
+
+  if ((qtr1 > preto && qtr2 > preto && qtr3 > preto) && (sensor_1 > p2 || sensor_2 > p2) ) {
+    frente(vm); Serial.println("engano");
+    //led_E();
+  }
+  else if ((qtr1 > preto && qtr2 > preto && qtr3 > preto) && sensorE > p3 && (sensor_1 < p2 && sensor_2 < p2)) {
+    frente(vm); delay(300);
+   // led_E();
+    do {
+      oi();
+      sensor_1 = analogRead(TCRT_f1);
+      sensor_2 = analogRead(TCRT_f2);
+      esquerda(vm);
+    } while (sensor_1 < p3  ||  sensor_2 < p3);
+
+    Serial.println("saiu esquerda");
+    frente(0);
+    delay(1000);
+  }
+    else if (((qtr1 > p2 && qtr2 > p2 && qtr3 > p2 && qtr4 > p2 && qtr5 > p2 ) && sensorE < branco) || ((qtr1 < branco && qtr2 > verde && qtr3 > verde && qtr4 > verde && qtr5 > verde ) && sensorE < branco)) {
+    //led_E();
+    frente(vm); delay(400);
+    esquerda(vm); delay(300);
+    Serial.println("entreiiii __ esquerda");
+    do {
+      oi();
+      sensor_1 = analogRead(TCRT_f1);
+      sensor_2 = analogRead(TCRT_f2);
+      esquerda(vm);
+    } while (sensor_1 < p3  ||  sensor_2 < p3);
+
+    Serial.println("saiu esquerda");
+    frente(vm);
+    delay(200);
+    frente(0);
+    delay(1000);
+  }
+
   //-------------------------------------------------------------------------DIREITA
 if (sensor_2 < branco && position > 0 && position < 6400) {
     direi(vm ); Serial.println("frente2- direita");
@@ -643,7 +649,7 @@ void ultra(){
 void ligar(){
     digitalWrite(12, 1);
     digitalWrite(11, 1);
-    delay(40);
+    //delay(10);
 }
 void desligar(){
     digitalWrite(12, 0);
@@ -652,11 +658,11 @@ void desligar(){
 }
 void led_E(){
     digitalWrite(12, 1);
-    delay(40);
+   // delay(10);
 }
 void led_D(){
     digitalWrite(11, 1);
-    delay(40);
+    //delay(10);
 }
 
 void buzzer(){
