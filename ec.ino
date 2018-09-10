@@ -39,9 +39,9 @@ NUM_SENSORS, NUM_SAMPLES_PER_SENSOR, EMITTER_PIN);
 unsigned int sensorValues[NUM_SENSORS]; 
 
 //----------------------------------Ultrassônicos
-Ultrasonic ultrasonic_F(35,37);
+Ultrasonic ultrasonic_F(30,31);
 Ultrasonic ultrasonic_E(34,32);
-Ultrasonic ultrasonic_D(30,36);
+Ultrasonic ultrasonic_D(33,36);
  int frente_U = ultrasonic_F.Ranging(CM);
  int direita_U = ultrasonic_D.Ranging(CM);
  int esquerda_U = ultrasonic_E.Ranging(CM);
@@ -58,6 +58,15 @@ int pos2 = 24 ;
 void setup()
 {
   Serial.begin(9600);  //  setup porta serial
+    while(1){
+  
+  int frente_U = ultrasonic_F.Ranging(CM);
+ int direita_U = ultrasonic_D.Ranging(CM);
+ int esquerda_U = ultrasonic_E.Ranging(CM);
+
+  ultra();
+ delay(20);
+  }
   pinMode(neg1, OUTPUT);
   pinMode(pos1, OUTPUT);
   pinMode(neg2, OUTPUT);
@@ -76,7 +85,7 @@ void loop()
   desligar();
   unsigned int position = qtra.readLine(sensorValues);
   oi();
-  
+
   sensor_1 = analogRead(TCRT_f1);
   sensor_2 = analogRead(TCRT_f2);
 
@@ -126,6 +135,39 @@ void loop()
     frente(vm); Serial.println("engano");
     //led_E();
   }
+  else if ((qtr1 > preto && qtr2 > preto && qtr3 > preto) && sensorE > p3 && (sensor_1 < p2 && sensor_2 < p2)) {
+    frente(vm); delay(300);
+   // led_E();
+    do {
+      oi();
+      sensor_1 = analogRead(TCRT_f1);
+      sensor_2 = analogRead(TCRT_f2);
+      esquerda(vm);
+    } while (sensor_1 < p3  ||  sensor_2 < p3);
+
+    Serial.println("saiu esquerda");
+    frente(0);
+    delay(1000);
+  }
+    else if (((qtr1 > p2 && qtr2 > p2 && qtr3 > p2 && qtr4 > p2 && qtr5 > p2 ) && sensorE < branco) || ((qtr1 < branco && qtr2 > verde && qtr3 > verde && qtr4 > verde && qtr5 > verde ) && sensorE < branco)) {
+    //led_E();
+    frente(vm); delay(400);
+    esquerda(vm); delay(300);
+    Serial.println("entreiiii __ esquerda");
+    do {
+      oi();
+      sensor_1 = analogRead(TCRT_f1);
+      sensor_2 = analogRead(TCRT_f2);
+      esquerda(vm);
+    } while (sensor_1 < p3  ||  sensor_2 < p3);
+
+    Serial.println("saiu esquerda");
+    frente(vm);
+    delay(200);
+    frente(0);
+    delay(1000);
+  }
+
    
   //-------------------------------------------------------------------------DIREITA
 if (sensor_2 < branco && position > 0 && position < 6400) {
@@ -308,7 +350,7 @@ void oi() {
   Serial.print(sensor_2);
   Serial.print('\t');
   //Serial.println(); // uncomment this line if you are using raw values
-  Serial.println(position); // comment this line out if you are using raw values
+  Serial.print(position); // comment this line out if you are using raw values
 }
 
 //--------------------Desviando de Obstaculos
@@ -629,11 +671,16 @@ void terceira_ronda(){
 }
 
 void ultra(){
+ int frente_U = ultrasonic_F.Ranging(CM);
+ int direita_U = ultrasonic_D.Ranging(CM);
+ int esquerda_U = ultrasonic_E.Ranging(CM);
+
   Serial.print(" ((  ");
   Serial.print("(F-");
   Serial.print(frente_U);
-  Serial.print("cm) ");
-  
+  Serial.println("cm) ");
+  delay(41);
+ /* 
   Serial.print("(D-");
   Serial.print(direita_U);
   Serial.print("cm) ");
@@ -643,6 +690,7 @@ void ultra(){
   Serial.print("cm) ");
   Serial.println(" ))");
   delay(41);
+  */
 }
 // ligando os leds
 
@@ -671,4 +719,3 @@ void buzzer(){
     digitalWrite(10, 0);
     
 }
-
